@@ -10,9 +10,10 @@ const char *argp_program_bug_address = "<adrian@axiplus.com>";
 static char doc[] = "nanoinit - descriere aici";    //checkAL
 
 static struct argp_option options[] = {
-    { "config-file", 'c', 0, 0, "Specifies the configuration JSON file.", 0 }, //checkAL default ?
-    { "config-json_object", 'j', 0, 0, "Specifies the parent JSON object. Default value is null, which means that it will look directly into the root of the JSON file.", 0},
-    { "log-path", 'l', 0, 0, "Specified the path for logging.", 0 },   //checkAL default ?
+    { "config-file", 'c', "/path/to/config.json", 0, "Specifies the configuration JSON file. Default value is null, which means that no apps will be run, but nanoinit will sleep for infinity and wait for a kill signal.", 0 },
+    { "config-json-object", 'j', "nanoinit-settings", 0, "Specifies the parent JSON object. Default value is null, which means that it will look directly into the root of the JSON file.", 0},
+    { "log-path", 'l', "/path/to/log.txt", 0, "Specified the path for writing log-files. Default only uses stderr and stdout for logging.", 0 },
+    { "verbose", 'v', "0-2", 0, "Specified application print verbosity level. Values are 0(nanoinit ERR)-default, 1(application ERR), 2(LOG).", 0 },
     { 0 } 
 };
 
@@ -30,6 +31,10 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
     nanoinit_arguments_t *iter_arguments = state->input;
     switch (key) {
         case 'c':
+            if(arg == 0) {
+                return ARGP_ERR_UNKNOWN;
+            }
+
             iter_arguments->config_file = strdup(arg);
             if(iter_arguments->config_file == 0) {
                 return ARGP_ERR_UNKNOWN;
@@ -37,6 +42,10 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
             break;
 
         case 'j':
+            if(arg == 0) {
+                return ARGP_ERR_UNKNOWN;
+            }
+
             iter_arguments->config_json_object = strdup(arg);
             if(iter_arguments->config_json_object == 0) {
                 return ARGP_ERR_UNKNOWN;
@@ -44,9 +53,25 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
             break;
 
         case 'l':
+            if(arg == 0) {
+                return ARGP_ERR_UNKNOWN;
+            }
+
             iter_arguments->log_path = strdup(arg);
             if(iter_arguments->log_path == 0) {
                 return ARGP_ERR_UNKNOWN;
+            }
+            break;
+
+        case 'v':
+            if(arg == 0) {
+                return ARGP_ERR_UNKNOWN;
+            }
+
+            iter_arguments->verbosity_level  = arg[0] - '0';
+            if((iter_arguments->verbosity_level < 0) || (iter_arguments->verbosity_level > 2)) {
+                //invalid verbosity level
+                argp_usage(state);
             }
             break;
 
