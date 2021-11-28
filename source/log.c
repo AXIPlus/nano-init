@@ -40,6 +40,9 @@ void log_free(void) {
         fclose(log_file);
         log_file = 0;
     }
+
+    instances--;
+    app_verbosity_level = 0;
 }
 
 void _log_add(int verbosity_level, const char *format, ...) {
@@ -70,7 +73,7 @@ void _log_add(int verbosity_level, const char *format, ...) {
     unsigned int ts_msec = (unsigned int)(tv.tv_usec) / 1000;
     
     char *format_with_timestamp = 0;
-    result = asprintf(&format_with_timestamp, "[%llu.%03u] %s\n", ts_sec, ts_msec, format);
+    result = asprintf(&format_with_timestamp, "[%llu.%03u] [nanoinit] %s\n", ts_sec, ts_msec, format);
     (void)result;
     
     if(format_with_timestamp == 0) {
