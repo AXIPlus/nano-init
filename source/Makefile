@@ -1,6 +1,6 @@
 # MIT License
 # 
-# Copyright (c) 2021 AXIPlus / Adrian Lita - www.axiplus.com
+# Copyright (c) 2021 AXIPlus / Adrian Lita / Alex Stancu - www.axiplus.com
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
 # SOFTWARE.
 
 # Usage:
-# make        					# builds nano-init for Release
-# debugEnable=true make        	# builds nano-init for Debug
+# make        					# builds nanoinit for Release
+# debugEnable=true make        	# builds nanoinit for Debug
 # make clean  					# remove ALL binaries and objects
 
 # application binary name
@@ -67,7 +67,7 @@ $(BUILD_DIR)/$(BUILD_MODE)/%.o: $(SOURCE_DIR)/%.c
 
 PHONY += pre_build
 pre_build: Makefile
-	@echo "\e[1;34mnano-init Build\e[0m - \e[1;32mstarted\e[0m... (\e[1;37m$(BUILD_MODE)\e[0m)"
+	@echo "\e[1;34mnanoinit Build\e[0m - \e[1;32mstarted\e[0m... (\e[1;37m$(BUILD_MODE)\e[0m)"
 	@test -d $(BUILD_DIR) || mkdir -p $(BUILD_DIR)
 
 PHONY += obj_build
@@ -75,12 +75,12 @@ obj_build: pre_build $(OBJ_FILES)
 
 PHONY += post_build
 post_build: obj_build
-	@echo "\e[1;34mnano-init Build\e[0m - \e[1;32mlinking\e[0m..."
+	@echo "\e[1;34mnanoinit Build\e[0m - \e[1;32mlinking\e[0m..."
 	$(CC) $(CCFLAGS) $(OBJ_FILES) $(CCLIB) -o $(APP_DEPLOY)/$(APP_NAME)
 
 PHONY += build
 build: post_build
-	@echo "\e[1;34mnano-init Build\e[0m - \e[1;32mfinished\e[0m..."
+	@echo "\e[1;34mnanoinit Build\e[0m - \e[1;32mfinished\e[0m..."
 
 
 PHONY += clean

@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2021 AXIPlus / Adrian Lita - www.axiplus.com
+ * Copyright (c) 2021 AXIPlus / Adrian Lita / Alex Stancu - www.axiplus.com
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include <stdlib.h>
+#include "edJSON/edJSON.h"
 
 static nanoinit_config_t config = {0};
 
