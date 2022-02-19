@@ -115,7 +115,7 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
             break;
 
         case 'm':
-            iter_arguments->config_file = true;
+            iter_arguments->manual_mode = true;
             break;
 
         case 'r':
