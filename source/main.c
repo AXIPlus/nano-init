@@ -35,7 +35,10 @@ int main(int argc, char **argv) {
     const nanoinit_arguments_t *arguments;
     const nanoinit_config_t *config;
     
+    //load and parse arguments; if any argument is not present, a default value is assumed
     arguments = arguments_init(argc, argv);
+
+    //initialize logger based on verbosity_level and log_path returned by arguments
     int rc = log_init(arguments->verbosity_level, arguments->log_path);
     if(rc != 0) {
         log_ni_error("log_init() failed");
@@ -48,20 +51,23 @@ int main(int argc, char **argv) {
                 break;
 
             default:
+                log_ni_error("invalid special mode");
                 break;
         }
 
         exit(0);
     }
 
-
+    //load config from config file; config file may not be nanoinit-specific, 
     config = config_init(arguments->config_file, arguments->config_json_object);
     if(config == 0) {
         log_ni_error("config_init() failed; using zero-config");
     }
 
+    //start supervisor; this function returns only on nanoinit exit; on fork-exec the freeing is taken care of there
     rc = supervisor_start(arguments, config);
 
+    //free resources
     config_free();
     arguments_free();
     log_free();

@@ -45,7 +45,7 @@ typedef enum {
     edJSON_STATE_FIND_COMMA,
 } edJSON_state_t;
 
-int edJSON_parse(const char *json, edJSON_path_t *path_mem, size_t path_max_depth, edJSON_cb_t jsonEvent) {
+int edJSON_parse(const char *json, edJSON_path_t *path_mem, size_t path_max_depth, edJSON_cb_t jsonEvent, void *private) {
     if(json == 0) {
         return EDJSON_ERR_NO_INPUT;
     }
@@ -519,7 +519,7 @@ int edJSON_parse(const char *json, edJSON_path_t *path_mem, size_t path_max_dept
                 }
 
                 if(jsonEvent) {
-                    int rc = jsonEvent(path_mem, top + 1, val);
+                    int rc = jsonEvent(path_mem, top + 1, val, private);
                     if(rc != 0) {
                         return EDJSON_SUCCESS;
                     }

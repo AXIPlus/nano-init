@@ -32,14 +32,14 @@
  * 
  * Current version of edJSON library
  * */
-#define EDJSON_VERSION      "1.1.0"
+#define EDJSON_VERSION      "1.1.1"
 
 /**
  * @brief Path array element.
  * 
  * Structure for representing an element in the JSON path.
  * */
-typedef struct {
+typedef struct edJSON_path_s {
     char _prev;             /**< internal data, do not use and do not modify. */
 
     int index;              /**< -1 if value is non-array, otherwise current array index. */
@@ -52,7 +52,7 @@ typedef struct {
  * 
  * Structure for representing a JSON-stored value.
  * */
-typedef struct {
+typedef struct edJOSN_value_s {
     enum {
         EDJSON_VT_INTEGER,      /**< Returned value is an integer. */
         EDJSON_VT_STRING,       /**< Returned value is a string. */
@@ -82,9 +82,10 @@ typedef struct {
  * @param path Found path array. See edJSON_path_t for detailed description.
  * @param path_size Found path array size.
  * @param value Found value. See edJSON_value_t for detailed description.
+ * @param private Private data passed to _parse() function.
  * @return User must return either 0, for the parser to continue parsing, or a non-null value to stop parsing immediately and return with EDJSON_SUCCESS.
  * */
-typedef int(*edJSON_cb_t)(const edJSON_path_t *path, size_t path_size, edJSON_value_t value);
+typedef int(*edJSON_cb_t)(const edJSON_path_t *path, size_t path_size, edJSON_value_t value, void *private);
 
 /**
  * @brief edJSON_* return codes.
@@ -106,9 +107,10 @@ typedef int(*edJSON_cb_t)(const edJSON_path_t *path, size_t path_size, edJSON_va
  * @param path_mem Pointer to a memory location where current path is build. This should be allocated by the caller.
  * @param path_max_depth Maximum path depth. Represents the maximum number of elements that path_mem can store.
  * @param jsonEvent Pointer to the callback function which is called when a value is found. Can be NULL when user just wants to validate JSON content.
+ * @param private Private user data; Opaque to edJSON, everything on this falls into user's responsibility
  * @return Return code of the function (see defines above); 0 for success, negative for internal error, or positive for content error (return code represents index of where error occured).
  * */
-int edJSON_parse(const char *json, edJSON_path_t *path_mem, size_t path_max_depth, edJSON_cb_t jsonEvent);
+int edJSON_parse(const char *json, edJSON_path_t *path_mem, size_t path_max_depth, edJSON_cb_t jsonEvent, void *private);
 
 /**
  * @brief Utility functions.
