@@ -56,6 +56,10 @@ const nanoinit_config_t *config_init(const char *filename, const char *json_obje
         log_ni_error("config_init() JSON file %s could not be opened", filename);
     }
 
+    if(json_object == 0) {
+        json_object = "";
+    }
+
     if(json_content) {
         edJSON_path_t edJSON_path[EDJSON_PATH_MAX];
         int rc = edJSON_parse(json_content, edJSON_path, EDJSON_PATH_MAX, edJSON_callback, (void*)json_object);
@@ -91,17 +95,41 @@ void config_free() {
 
 static int edJSON_callback(const edJSON_path_t *path, size_t path_size, edJSON_value_t value, void *private) {
     const char *json_object = (const char *)private;
+    (void)json_object;  //checkAL
 
-    //delete this after initial testing
-    printf("json_object: %s\n", json_object);
     char json_path[JSON_PATH_STRING_SIZE];
     int rc = edJSON_build_path_string(json_path, JSON_PATH_STRING_SIZE, path, path_size);
-    if(rc != EDJSON_SUCCESS) {
-        log_ni_error("edJSON_build_path_string failed to buiild path");
+    if(rc < 0) {
+        log_ni_error("edJSON_build_path_string failed to buiild path [%d]", rc);
     }
-    printf("path: %s | value: %d\n", json_path, value.value_type);
 
-    //end-delete this
+
+
+    printf("%s | value: ", json_path);
+
+    char pv[128];
+    if(value.value_type == EDJSON_VT_STRING) {
+        int rc = edJSON_string_unescape(pv, 128, value.value.string.value, value.value.string.value_size);
+        if(rc < 0) {
+            printf("error on edJSON_string_unescape\n");
+            return rc;  //stop parsing
+        }
+
+        printf("\"%s\"", pv);
+    }
+    else if(value.value_type == EDJSON_VT_INTEGER) {
+        printf("%d", value.value.integer);
+    }
+    else if(value.value_type == EDJSON_VT_DOUBLE) {
+        printf("%.4f", value.value.floating);
+    }
+    else if(value.value_type == EDJSON_VT_BOOL) {
+        printf("%s", value.value.boolean ? "true" : "false");
+    }
+    else if(value.value_type == EDJSON_VT_NULL) {
+        printf("null");
+    }
+    printf("\n");
 
     
 

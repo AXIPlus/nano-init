@@ -56,6 +56,17 @@ const nanoinit_arguments_t *arguments_init(int argc, char **argv) {
         arguments.manual_mode = true;
     }
 
+    //check config file and config json object in environment vars
+    char *config_file_env = getenv("NANOINIT_CONFIG_FILE");
+    if(config_file_env != 0) {
+        arguments.config_file = strdup(config_file_env);
+    }
+
+    char *config_json_object_env = getenv("NANOINIT_CONFIG_JSON_OBJECT");
+    if(config_json_object_env != 0) {
+        arguments.config_json_object = strdup(config_json_object_env);
+    }
+
     return &arguments;
 }
 
@@ -67,6 +78,10 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
                 return ARGP_ERR_UNKNOWN;
             }
 
+            if(iter_arguments->config_file) {
+                free(iter_arguments->config_file);
+                iter_arguments->config_file = 0;
+            }
             iter_arguments->config_file = strdup(arg);
             if(iter_arguments->config_file == 0) {
                 return ARGP_ERR_UNKNOWN;
@@ -78,6 +93,10 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
                 return ARGP_ERR_UNKNOWN;
             }
 
+            if(iter_arguments->config_json_object) {
+                free(iter_arguments->config_json_object);
+                iter_arguments->config_json_object = 0;
+            }
             iter_arguments->config_json_object = strdup(arg);
             if(iter_arguments->config_json_object == 0) {
                 return ARGP_ERR_UNKNOWN;
@@ -96,7 +115,7 @@ static error_t argp_parse_cb(int key, char *arg, struct argp_state *state) {
             break;
 
         case 'm':
-            iter_arguments->manual_mode = true;
+            iter_arguments->config_file = true;
             break;
 
         case 'r':
