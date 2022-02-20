@@ -10,7 +10,7 @@
     "program2": {
         "path": "/path/to/program2",
         "args": ["-p/a/path", "--path=/another/path"],
-        "nomanual": true
+        "manual": true
     },
 
     "program3": {
@@ -18,5 +18,10 @@
         "args": ["-p/a/path", "--path=/another/path"],
         "stdout": "",
         "stderr": ""
+    },
+
+    "program4": {
+        "path": "/path/to/program3",
+        "args": "-ahl"
     }
 }

@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
                 break;
         }
 
-        exit(0);
+        goto main_exit;
     }
 
     //load config from config file; config file may not be nanoinit-specific, 
@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
     //start supervisor; this function returns only on nanoinit exit; on fork-exec the freeing is taken care of there
     rc = supervisor_start(arguments, config);
 
+main_exit:
     //free resources
     config_free();
     arguments_free();
