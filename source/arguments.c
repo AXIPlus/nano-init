@@ -59,11 +59,17 @@ const nanoinit_arguments_t *arguments_init(int argc, char **argv) {
     //check config file and config json object in environment vars
     char *config_file_env = getenv("NANOINIT_CONFIG_FILE");
     if(config_file_env != 0) {
+        if(arguments.config_file) {
+            free(arguments.config_file);
+        }
         arguments.config_file = strdup(config_file_env);
     }
 
     char *config_json_object_env = getenv("NANOINIT_CONFIG_JSON_OBJECT");
     if(config_json_object_env != 0) {
+        if(arguments.config_json_object) {
+            free(arguments.config_json_object);
+        }
         arguments.config_json_object = strdup(config_json_object_env);
     }
 
